@@ -1,6 +1,8 @@
 package golang_united_school_homework
 
 import "fmt"
+
+const ErrInd = "Index went out of the range"
 // box contains list of shapes and able to perform operations on them
 type box struct {
 	shapes         []Shape
@@ -31,7 +33,7 @@ func (b *box) AddShape(shape Shape) error {
 func (b *box) GetByIndex(i int) (Shape, error) {
 	//panic("implement me")
 	if i >= len(b.shapes) {
-		return nil, fmt.Errorf("Index went out of the range")
+		return nil, fmt.Errorf(ErrInd)
 	} else {
 		return b.shapes[i], nil
 	}
@@ -42,7 +44,7 @@ func (b *box) GetByIndex(i int) (Shape, error) {
 func (b *box) ExtractByIndex(i int) (Shape, error) {
 	//panic("implement me")
 	if i >= len(b.shapes) {
-		return nil, fmt.Errorf("Index went out of the range")
+		return nil, fmt.Errorf(ErrInd)
 	} else {
 		s := b.shapes[i]
 		copy(b.shapes[i:], b.shapes[i+1:])
@@ -57,7 +59,7 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 func (b *box) ReplaceByIndex(i int, shape Shape) (Shape, error) {
 	//panic("implement me")
 	if i >= len(b.shapes) {
-		return nil, fmt.Errorf("Index went out of the range")
+		return nil, fmt.Errorf(ErrInd)
 	} else {
 		s := b.shapes[i]
 		b.shapes[i] = shape
@@ -93,13 +95,15 @@ func (b *box) RemoveAllCircles() error {
 	for i := 0; i < len(b.shapes); i++ {
 		switch b.shapes[i].(type) {
 		case Circle:
-			n++
-		case *Circle:
-			n++
-		}
-		if n !=0 {
 			copy(b.shapes[i:], b.shapes[i+1:])
 			b.shapes = b.shapes[:len(b.shapes)-1]
+			n++
+			i--
+		case *Circle:
+			copy(b.shapes[i:], b.shapes[i+1:])
+			b.shapes = b.shapes[:len(b.shapes)-1]
+			n++
+			i--
 		}
 	}
 	if n==0 {
